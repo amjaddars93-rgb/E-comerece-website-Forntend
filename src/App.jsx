@@ -3,12 +3,12 @@ import {BrowserRouter,Routes,Route} from 'react-router-dom'
 import Homepage from './components/Homepage'
 import About from './components/About'
 import Navbar from './components/Navbar'
-import Products from './components/products'
-import ViewDetailsProducts from './components/viewDetailsProducts'
 import AddToCart from './components/AddToCart'
 import UserRegistation from './components/UserRegistation'
 import Contactus from './components/Contactus'
 import UserLogin from './components/UserLogin'
+import ViewDetailsProducts from './components/ViewDetailsProducts'
+import Products from './components/Products'
 
 
 const App = () => {
