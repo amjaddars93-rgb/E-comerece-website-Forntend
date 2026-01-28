@@ -1,27 +1,26 @@
-import React from 'react'
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
 
 const AddToCart = () => {
-  const { AddtoCart } = useSelector((state) => state.Addproducts);
+  const [cartItems, setCartItems] = useState([]);
 
-  console.log("Cart Items:", AddtoCart);
+  useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCartItems(cart);
+  }, []);
+
+  if (cartItems.length === 0) return <p>No items in cart</p>;
 
   return (
     <div>
       <h2>Add To Cart Items</h2>
-
-      {AddtoCart && AddtoCart.length > 0 ? (
-        AddtoCart.map((item, index) => (
-          <div key={index} style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}>
-            <h3>{item.title}</h3>
-            <p>Price: {item.price}</p>
-            <p>Quantity: {item.quantity}</p>
-            <img src={item.image} alt={item.title} width="100" />
-          </div>
-        ))
-      ) : (
-        <p>No items in cart</p>
-      )}
+      {cartItems.map((item, index) => (
+        <div key={index} style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}>
+          <h3>{item.name}</h3>
+          <p>Price: ${item.price}</p>
+          <p>Quantity: {item.quantity}</p>
+          <img src={item.image} alt={item.name} width="100" />
+        </div>
+      ))}
     </div>
   );
 };

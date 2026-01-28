@@ -1,24 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const ViewDetailsProducts = () => {
-  const [singleProduct, setSingleProduct] = useState(null); // single product object
-  const { products } = useSelector((state) => state.viewdproduct); // nested array
-
+  const [singleProduct, setSingleProduct] = useState(null);
   const { id } = useParams();
 
   useEffect(() => {
-    if (id && products && products[0]) {
-      // products[0] is the inner array
-      const product = products[0].find((p) => p.id === Number(id));
-      setSingleProduct(product);
-    }
-  }, [id, products]);
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/products/products-get/${id}`);
+        setSingleProduct(res.data); // backend should return a single product object
+      } catch (err) {
+        console.error("Failed to fetch product:", err);
+      }
+    };
 
-  if (!singleProduct) {
-    return <p className="text-center py-10">Loading product details...</p>;
-  }
+    fetchProduct();
+  }, [id]);
+
+  const handleAddToCart = (product) => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingIndex = cart.findIndex((item) => item._id === product._id);
+    if (existingIndex !== -1) {
+      cart[existingIndex].quantity += 1;
+    } else {
+      cart.push({ ...product, quantity: 1 });
+    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert(`${product.name} added to cart!`);
+  };
+
+  if (!singleProduct) return <p className="text-center py-10">Loading product details...</p>;
 
   return (
     <section className="text-gray-600 body-font overflow-hidden">
@@ -26,17 +39,14 @@ const ViewDetailsProducts = () => {
         <div className="lg:w-4/5 mx-auto flex flex-wrap">
           {/* Product Details */}
           <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
-            <h2 className="text-sm title-font text-gray-500 tracking-widest">
-              BRAND NAME
-            </h2>
+            <h2 className="text-sm title-font text-gray-500 tracking-widest">BRAND NAME</h2>
             <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">
               {singleProduct.name}
             </h1>
-          
             <p className="leading-relaxed mb-4">
-              This is a great product: {singleProduct.name}. It costs ₹
-              {singleProduct.price} and comes with amazing quality.
+              This is a great product: {singleProduct.name}. It costs ₹{singleProduct.price} and comes with amazing quality.
             </p>
+
             <div className="flex border-t border-gray-200 py-2">
               <span className="text-gray-500">Color</span>
               <span className="ml-auto text-gray-900">Blue</span>
@@ -49,24 +59,12 @@ const ViewDetailsProducts = () => {
               <span className="text-gray-500">Quantity</span>
               <span className="ml-auto text-gray-900">4</span>
             </div>
-            <div className="flex">
-              <span className="title-font font-medium text-2xl text-gray-900">
-                ₹{singleProduct.price}
-              </span>
-              <button className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
+
+            <div className="flex gap-3">
+              <span className="title-font font-medium text-2xl text-gray-900">₹{singleProduct.price}</span>
+             
+              <button className="bg-indigo-500 text-white py-2 px-6 rounded hover:bg-indigo-600 transition">
                 Buy Now
-              </button>
-              <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
-                <svg
-                  fill="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="w-5 h-5"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
-                </svg>
               </button>
             </div>
           </div>

@@ -1,109 +1,86 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setviewDetailsProduct } from "../redux/viewDeatialsSlice";
-import { setAddtoCart } from "../redux/AddToCartSlice";
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate=useNavigate()
-  const dispatch=useDispatch()
-  useEffect(()=>{
-       const token = localStorage.getItem("token")
-       console.log(token)
-    
-       if(!token){
-        navigate('/')
-        
-       }
-      //  setIsLoggedIn(true)
-      },[])
-
-  const Getproductsdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/products/products-get",{
-    withCredentials: true
-  }
-      );
-      setProducts(response.data.data); // backend array
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+      return;
+    }
+
+    const Getproductsdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/products/products-get"
+        );
+        setProducts(response.data.data);
+        setLoading(false);
+      } catch (error) {
+        console.error(
+          "API Error:",
+          error.response ? error.response.data : error.message
+        );
+        setLoading(false);
+      }
+    };
+
     Getproductsdata();
-  }, []);
+  }, [navigate]);
 
-  const viewdetailsproduct=()=>{
-    dispatch(setviewDetailsProduct(products))
+  const handleAddToCart = (product) => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingIndex = cart.findIndex((item) => item._id === product._id);
+    if (existingIndex !== -1) {
+      cart[existingIndex].quantity += 1;
+    } else {
+      cart.push({ ...product, quantity: 1 });
+    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert(`${product.name} added to cart!`);
+  };
 
-
-  }
-  const Addtocartproducts=(product)=>{
-    dispatch(setAddtoCart(product))
-
-
-  }
-  
-
+  if (loading) return <p className="text-center mt-10">Loading products...</p>;
+  if (products.length === 0) return <p className="text-center mt-10">No products found</p>;
 
   return (
-    <div className="bg-gray-50 min-h-screen py-10">
-      <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">
-        Our Products
-      </h1>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {products.map((product) => (
+        <div
+          key={product._id}
+          className="p-4 border rounded shadow flex flex-col justify-between"
+        >
+          <img
+            src={product.image}
+            alt={product.name}
+            className="h-48 w-full object-contain mb-2"
+          />
+          <h3 className="font-bold mt-2">{product.name}</h3>
+          <p className="text-indigo-600 font-semibold">${product.price}</p>
 
-      {loading ? (
-        <p className="text-center text-gray-600 text-lg">Loading products...</p>
-      ) : (
-        <div className="max-w-6xl mx-auto px-6 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {products.length > 0 ? (
-            products.map((product) => (
-              <div
-                key={product._id}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition p-5 flex flex-col"
-              >
-                <div className="flex justify-center items-center h-48">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="max-h-full object-contain"
-                  />
-                </div>
+          {/* ✅ Buttons */}
+          <div className="flex gap-2 mt-3">
+           <button
+  onClick={() => navigate(`/viewdetailsproducts/${product._id}`)}
+  className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+>
+  View Details
+</button>
 
-                <h3 className="mt-4 text-lg font-semibold text-gray-800">
-                  {product.name}
-                </h3>
-
-                <p className="text-indigo-600 font-bold mt-2 text-xl">
-                  ${product.price}
-                </p>
-
-                <button onClick={()=>Addtocartproducts(product)} className="mt-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold">
-                  Add to Cart
-                </button>
-                <Link to={`/viewdetailsproducts/${product.id}`} className="" >
-                <button onClick={viewdetailsproduct} className="mt-4  w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold">
-                  view detials
-                </button>
-                </Link>
-
-              </div>
-            ))
-          ) : (
-            <p className="col-span-3 text-center text-gray-600">
-              No products found
-            </p>
-          )}
+            <button
+              onClick={() => handleAddToCart(product)}
+              className="flex-1 bg-green-500 text-white py-2 rounded hover:bg-green-600 transition"
+            >
+              Add to Cart
+            </button>
+          </div>
         </div>
-      )}
+      ))}
     </div>
   );
 };
