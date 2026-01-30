@@ -19,7 +19,7 @@ const AdminEditProduct = () => {
     const loadProduct = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/products/products-get/${id}`
+          `https://e-comerece-website-backend-production.up.railway.app/products/products-get/${id}`
         );
         console.log(res.data)
         setProduct({
@@ -44,7 +44,7 @@ const AdminEditProduct = () => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:5000/products/product-update/${id}`,
+        `https://e-comerece-website-backend-production.up.railway.app/products/product-update/${id}`,
         product
       );
       alert("Product updated successfully!");

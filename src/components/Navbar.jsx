@@ -18,7 +18,7 @@ const Navbar = () => {
 
   const logoutbuttonfuncation = async () => {
     try {
-      await axios.post("http://localhost:5000/user/user-logout");
+      await axios.post("https://e-comerece-website-backend-production.up.railway.app/user/user-logout");
       localStorage.removeItem("token");
       setIsLogged(false);
       setMenuOpen(false);

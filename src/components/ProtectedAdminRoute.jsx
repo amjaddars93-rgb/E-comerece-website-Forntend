@@ -12,7 +12,7 @@ const ProtectedAdminRoute = ({ children }) => {
     const getUserRole = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/user/user-role",
+          "https://e-comerece-website-backend-production.up.railway.app/user/user-role",
           {
             headers: {
               Authorization: `Bearer ${token}`,

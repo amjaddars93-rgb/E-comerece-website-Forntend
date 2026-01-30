@@ -29,7 +29,7 @@ const Contactus = () => {
     onSubmit: async (values, { resetForm, setSubmitting, setStatus }) => {
       try {
         const res = await axios.post(
-          "http://localhost:5000/contact/infor-contact",
+          "https://e-comerece-website-backend-production.up.railway.app/contact/infor-contact",
           values
         );
 

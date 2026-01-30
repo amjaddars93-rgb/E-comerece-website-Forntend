@@ -9,7 +9,7 @@ const AdminDashboard = () => {
   // Fetch total products from backend
   const fetchTotalProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/products/products-get"); 
+      const response = await axios.get("https://e-comerece-website-backend-production.up.railway.app/products/products-get"); 
       // adjust the URL based on your backend route
       setTotalProducts(response.data.data.length); // assuming data array is in response.data.data
     } catch (error) {

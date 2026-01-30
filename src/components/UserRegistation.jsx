@@ -42,7 +42,7 @@ const UserRegistration = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/user/user-register",
+        "https://e-comerece-website-backend-production.up.railway.app/user/user-register",
         formData,
         { withCredentials: true }
       );

@@ -10,7 +10,7 @@ const ViewDetailsProducts = () => {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/products/products-get/${id}`
+          `https://e-comerece-website-backend-production.up.railway.app/products/products-get/${id}`
         );
 
         // ✅ FIX: extract product from response

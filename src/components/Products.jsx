@@ -17,7 +17,7 @@ const Products = () => {
     const Getproductsdata = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/products/products-get"
+          "https://e-comerece-website-backend-production.up.railway.app/products/products-get"
         );
         setProducts(response.data.data);
         setLoading(false);
