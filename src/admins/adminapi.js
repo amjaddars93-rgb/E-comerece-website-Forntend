@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://e-comerece-website-backend-production.up.railway.appp/products", // backend prefix
+  baseURL: "https://e-comerece-website-backend-production.up.railway.app/products", // backend prefix
 });
 
 API.interceptors.request.use((req) => {
